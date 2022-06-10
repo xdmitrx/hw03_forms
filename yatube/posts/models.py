@@ -5,9 +5,10 @@ User = get_user_model()
 
 
 class Post(models.Model):
+    """Создание модели Post."""
 
-    text = models.TextField('posts text')
-    pub_date = models.DateTimeField('date', auto_now_add=True)
+    text = models.TextField('текст поста')
+    pub_date = models.DateTimeField('дата', auto_now_add=True)
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -22,14 +23,19 @@ class Post(models.Model):
         ordering = ('-pub_date',)
 
     def __str__(self):
+        """Строковое представление объекта."""
         return self.text
 
 
 class Group(models.Model):
+    """Создание модели Group."""
 
-    title = models.CharField('name', max_length=200)
-    slug = models.SlugField('URL', max_length=200, unique=True)
-    description = models.TextField('about')
+    title = models.CharField('Заголовок', max_length=200,
+                             help_text='Максимум 200 символов.')
+    slug = models.SlugField('URL', max_length=200, unique=True,
+                            help_text='Максимум 200 символов.')
+    description = models.TextField('Содержание')
 
     def __str__(self):
+        """Возвращает название группы."""
         return self.title
