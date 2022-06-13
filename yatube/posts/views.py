@@ -8,7 +8,7 @@ from .utils import get_page_context
 
 def index(request):
     """Выводит шаблон главной страницы."""
-    post_list = Post.objects.all()
+    post_list = Post.objects.select_related()
     page_obj = get_page_context(post_list, request)
     context = {
         'page_obj': page_obj,
@@ -33,8 +33,7 @@ def group_posts(request, slug):
 def profile(request, username):
     """Выводит страницу профиля пользователя."""
     author = get_object_or_404(User, username=username)
-    # post_list = Post.objects.select_related('author')
-    # c этой строчкой открываются все посты группы, а не определенного автора
+    post_list = Post.objects.select_related('author')
     post_list = Post.objects.filter(author=author).all()
     page_obj = get_page_context(post_list, request)
     context = {
@@ -47,6 +46,7 @@ def profile(request, username):
 
 def post_detail(request, post_id):
     """Выводит страницу отдельно взятого поста."""
+    post_object = Post.objects.select_related()
     post_object = get_object_or_404(Post, id=post_id)
     context = {
         'post': post_object,
@@ -59,12 +59,13 @@ def post_detail(request, post_id):
 def post_create(request):
     """Возможность создать новый пост для авторизованного пользователя."""
     form = PostForm(request.POST or None)
-    if (request.method == 'POST' and form.is_valid()):
+    if request.method == 'POST' and form.is_valid():
         post = form.save(commit=False)
         post.author = request.user
         post.save()
 
         return redirect('posts:profile', request.user.username)
+
     context = {
         'form': form
     }
@@ -75,7 +76,6 @@ def post_create(request):
 @login_required
 def post_edit(request, post_id):
     """Возможность редактировать пост для авторизованного пользователя."""
-    # is_edit = True
     post_object = get_object_or_404(Post, id=post_id)
     form = PostForm(request.POST or None, instance=post_object)
     if (request.method == 'POST' and form.is_valid()):
@@ -84,6 +84,7 @@ def post_edit(request, post_id):
         if post_object.author == request.user:
 
             return redirect('posts:post_detail', post_id)
+
     context = {
         'form': form,
         'True': True,

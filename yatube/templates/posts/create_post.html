@@ -25,31 +25,12 @@
           </div>
           <div class="card-body">  
             <form method="post"
-              {% if action_url %} action="{% url action_url %}"{% endif %}> 
+              {% if action_url %} 
+                action="{% url 'posts:post_create' post.create %}"
+                action="{% url 'posts:post_edit' post.id.edit %}"
+              {% endif %}> 
               {% csrf_token %}
-              {% for field in form %}
-                <div class="form-group row my-3"
-                  {% if field.field.required %} 
-                    aria-required="true"
-                  {% else %}
-                    aria-required="false"
-                  {% endif %}>
-                  <label for="{{ field.id_for_label }}">
-                    {{ field.label }}
-                    {% if field.field.required %}
-                      <span class="required text-danger">*</span>
-                    {% endif %}
-                  </label>
-                  <div>
-                    {{ field|addclass:'form-control' }}
-                    {% if field.help_text %}
-                      <small id="{{ field.id_for_label }}-help" class="form-text text-muted">
-                        {{ field.help_text|safe }}
-                      </small>
-                    {% endif %}
-                  </div>
-                </div>
-              {% endfor %}
+              {% include 'posts/includes/form.html' %}
               <div class="col-md-6 offset-md-4"> 
                 <button type="submit" class="btn btn-primary">
                   {% if True %}
@@ -66,5 +47,3 @@
     </div>
   </div>
 {% endblock %}
-
-<!-- <form name="post" action="{% url action_url %}" method="post"> не проходит пайтест-->

@@ -5,10 +5,9 @@ User = get_user_model()
 
 
 class CreationForm(UserCreationForm):
-    """Создание класса, наследуется от UserCreationForm."""
+    """Форма для создания формы для работы с моделью User."""
 
     class Meta(UserCreationForm.Meta):
-        """Форма для работы с моделью User."""
 
         model = User
         fields = ('first_name', 'last_name', 'username', 'email')

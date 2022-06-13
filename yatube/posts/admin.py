@@ -5,6 +5,7 @@ from .models import Post, Group
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
+    """Модель для админа сайта."""
 
     list_display = (
         'pk',
@@ -21,6 +22,7 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
+    """Модель для управления группами в админке."""
 
     list_display = ('title', 'slug', 'description')
     empty_value_display = '-пусто-'

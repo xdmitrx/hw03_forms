@@ -4,10 +4,9 @@ from .models import Post
 
 
 class PostForm(ModelForm):
-    """Создание класса, наследуется от ModelForm."""
+    """Форма Post для создания формы для работы с моделью User."""
 
     class Meta:
-        """Форма для работы с моделью Post."""
 
         model = Post
         fields = ('text', 'group')
