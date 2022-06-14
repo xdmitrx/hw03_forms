@@ -31,10 +31,11 @@
         <p>
           {{ post.text|linebreaksbr }}
         </p>
-        {% if True %}
+        {% if user.is_authenticated %}
         <button type="submit" class="btn btn-primary">
           Редактировать пост
-        {% endif %}  
+        {% endif %}
+        </button>  
         </article>
       </div> 
 {% endblock %}

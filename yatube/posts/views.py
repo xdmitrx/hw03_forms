@@ -8,7 +8,7 @@ from .utils import get_page_context
 
 def index(request):
     """Выводит шаблон главной страницы."""
-    post_list = Post.objects.select_related()
+    post_list = Post.objects.select_related('author', 'group')
     page_obj = get_page_context(post_list, request)
     context = {
         'page_obj': page_obj,
@@ -20,6 +20,7 @@ def index(request):
 def group_posts(request, slug):
     """Выводит шаблон с постами группы."""
     group = get_object_or_404(Group, slug=slug)
+    post_list = Post.objects.select_related()
     post_list = group.posts.all()
     page_obj = get_page_context(post_list, request)
     context = {
@@ -33,7 +34,7 @@ def group_posts(request, slug):
 def profile(request, username):
     """Выводит страницу профиля пользователя."""
     author = get_object_or_404(User, username=username)
-    post_list = Post.objects.select_related('author')
+    post_list = author.posts.select_related()
     post_list = Post.objects.filter(author=author).all()
     page_obj = get_page_context(post_list, request)
     context = {
@@ -76,14 +77,12 @@ def post_create(request):
 @login_required
 def post_edit(request, post_id):
     """Возможность редактировать пост для авторизованного пользователя."""
-    post_object = get_object_or_404(Post, id=post_id)
+    post_object = get_object_or_404(Post, id=post_id, author=request.user)
     form = PostForm(request.POST or None, instance=post_object)
     if (request.method == 'POST' and form.is_valid()):
         form.save()
 
-        if post_object.author == request.user:
-
-            return redirect('posts:post_detail', post_id)
+        return redirect('posts:post_detail', post_id)
 
     context = {
         'form': form,
@@ -91,4 +90,4 @@ def post_edit(request, post_id):
         'post': post_object
     }
 
-    return render(request, 'posts/create_post.html', context)
+    return render(request, 'posts:post_edit', context)

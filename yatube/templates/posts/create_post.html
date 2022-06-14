@@ -2,7 +2,7 @@
 
 {% block title%}
   <title>
-    {% if True %}
+    {% if form == True %}
       Редактировать пост
     {% else %}
       Новый пост
@@ -17,7 +17,7 @@
       <div class="col-md-8 p-5">
         <div class="card">
           <div class="card-header">
-            {% if True %}
+            {% if form == True %}
               Редактировать пост
             {% else %}
               Новый пост
@@ -33,12 +33,12 @@
               {% include 'posts/includes/form.html' %}
               <div class="col-md-6 offset-md-4"> 
                 <button type="submit" class="btn btn-primary">
-                  {% if True %}
+                  {% if user.is_authenticated %}
                     Сохранить
                   {% else %}
                     Добавить
-                  {% endif %}   
-                </button>
+                  {% endif %}
+                </button>     
               </div>
             </form>
           </div>

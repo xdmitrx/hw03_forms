@@ -10,10 +10,8 @@
     {{ group.description }}
   </p>
   {% for post in page_obj %}
-  <article> 
-   {% include 'includes/post.html' %}
+   {% include 'posts/post.html' %}
    {% if not forloop.last %}<hr>{% endif %}
-  </article>
   {% endfor %}
   {% include 'posts/includes/paginator.html' %}                   
 {% endblock %}

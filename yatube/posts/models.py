@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+from . import constants
+
 User = get_user_model()
 
 
@@ -17,14 +19,15 @@ class Post(models.Model):
         'Group',
         on_delete=models.SET_NULL,
         related_name='posts',
-        blank=True, null=True)
+        blank=True, null=True,
+        verbose_name='Группа')
 
     class Meta:
         ordering = ('-pub_date',)
 
     def __str__(self):
         """Строковое представление объекта."""
-        return (self.text[0:30])
+        return self.text[:constants.SYMBOLS_IN_SELF_TEXT]
 
 
 class Group(models.Model):
