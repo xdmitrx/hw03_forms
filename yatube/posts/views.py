@@ -20,8 +20,7 @@ def index(request):
 def group_posts(request, slug):
     """Выводит шаблон с постами группы."""
     group = get_object_or_404(Group, slug=slug)
-    post_list = Post.objects.select_related()
-    post_list = group.posts.all()
+    post_list = group.posts.select_related('author').all()
     page_obj = get_page_context(post_list, request)
     context = {
         'group': group,
@@ -34,8 +33,7 @@ def group_posts(request, slug):
 def profile(request, username):
     """Выводит страницу профиля пользователя."""
     author = get_object_or_404(User, username=username)
-    post_list = author.posts.select_related()
-    post_list = Post.objects.filter(author=author).all()
+    post_list = author.posts.all()
     page_obj = get_page_context(post_list, request)
     context = {
         'author': author,
@@ -47,8 +45,8 @@ def profile(request, username):
 
 def post_detail(request, post_id):
     """Выводит страницу отдельно взятого поста."""
-    post_object = Post.objects.select_related()
-    post_object = get_object_or_404(Post, id=post_id)
+    post_object = get_object_or_404(Post.objects.select_related(
+        'group', 'author'), id=post_id)
     context = {
         'post': post_object,
     }
@@ -79,10 +77,17 @@ def post_edit(request, post_id):
     """Возможность редактировать пост для авторизованного пользователя."""
     post_object = get_object_or_404(Post, id=post_id, author=request.user)
     form = PostForm(request.POST or None, instance=post_object)
-    if (request.method == 'POST' and form.is_valid()):
+    if request.method == 'POST' and form.is_valid():
         form.save()
 
-        return redirect('posts:post_detail', post_id)
+        if post_object.author == request.user:
+
+            return redirect('posts:post_edit', post_id)
+
+        if post_object.author != request.user:
+
+            return redirect('posts/post_detail', post_id)
+        form = PostForm(instance=post_object)
 
     context = {
         'form': form,
@@ -90,4 +95,4 @@ def post_edit(request, post_id):
         'post': post_object
     }
 
-    return render(request, 'posts:post_edit', context)
+    return render(request, 'posts/create_post.html', context)

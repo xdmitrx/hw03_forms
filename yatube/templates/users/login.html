@@ -12,7 +12,7 @@
         <div class="card-body">
           <form method="post"
             {% if action_url %}
-              action="{% url action_url %}"
+              action="{% url url 'login' %}"
             {% endif %}>
           {% csrf_token %}
           {% include 'posts/includes/form.html' %}  

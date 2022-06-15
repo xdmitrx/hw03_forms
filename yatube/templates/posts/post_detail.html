@@ -31,9 +31,10 @@
         <p>
           {{ post.text|linebreaksbr }}
         </p>
-        {% if user.is_authenticated %}
-        <button type="submit" class="btn btn-primary">
-          Редактировать пост
+        {% if post.author.pk == request.user.pk %}
+          <a class="btn btn-primary" href="{% url 'posts:post_edit' post.id %}">
+            Редактировать запись
+          </a>   
         {% endif %}
         </button>  
         </article>
